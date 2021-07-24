@@ -12,11 +12,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_product")
 public class Product implements Serializable{
+	
+	// FAZ SENTIDO VER OS PRODUTOS QUE COMPREI EM RELAÇÃO AO PEDIDO QUE ELE ESTÁ, E NÃO COM OS ITENS_PEDIDO
 	
 	private static final long serialVersionUID = 1L;
 
@@ -45,6 +50,11 @@ public class Product implements Serializable{
 	inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private Set<Category> categories = new HashSet<>();
 
+	
+	/* One product To Many OrderItem 
+	   id.product = id.getProduct de OrderItem */
+	@OneToMany(mappedBy = "id.product")   
+	private Set<OrderItem> items = new HashSet<>();
 	
 	public Product() {
 
@@ -101,6 +111,19 @@ public class Product implements Serializable{
 	public Set<Category> getCategories() {
 		return categories;
 	}
+	
+	// VARRER A COLLECTION DE OrderItem, ADICIONANDO CADA PRODUTO NO set 
+	// SEMPRE NO GET, PQ getProduct tem getOrderItem, que tem getProduct ... Jackson entra em loop
+	// AO BUSCAR UM PRODUTO, NÃO EXIBA OS SEUS PEDIDOS
+	@JsonIgnore 
+	public Set<Order> getOrders() {
+		Set<Order> set = new HashSet<>();
+		for (OrderItem item : this.items) {
+			set.add(item.getOrder());
+		}
+		return set;
+	}
+	
 
 	@Override
 	public int hashCode() {

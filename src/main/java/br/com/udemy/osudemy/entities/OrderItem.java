@@ -48,6 +48,7 @@ public class OrderItem implements Serializable{
 		this.id.setOrder(order);
 	}
 	
+	// não tem o jsonIgnore, pq ao buscar um Order, exiba os produtos nesse Order
 	public Product getProduct() {
 		return this.id.getProduct();
 	}
