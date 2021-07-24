@@ -2,6 +2,8 @@ package br.com.udemy.osudemy.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,12 +32,16 @@ public class Order implements Serializable {
 			pattern = "yyyy-MM-mm'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;
 	
+	private Integer status;
+	
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private User client;
 	
-	private Integer status;
-
+	@OneToMany(mappedBy = "id.order")  // One Order To Many OrderItems | id.order = id.getOrder em OrderItem
+	private Set<OrderItem> items = new HashSet<>();
+	
+	
 	public Order() {
 	}
 
@@ -69,7 +76,9 @@ public class Order implements Serializable {
 		this.client = client;
 	}
 	
-	
+	public Set<OrderItem> getItems() {
+		return this.items;
+	}
 
 	@Override
 	public int hashCode() {

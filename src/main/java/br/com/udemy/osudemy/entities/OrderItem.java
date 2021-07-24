@@ -6,6 +6,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.udemy.osudemy.entities.pk.OrderItemPK;
 
 @Entity
@@ -13,9 +15,11 @@ import br.com.udemy.osudemy.entities.pk.OrderItemPK;
 public class OrderItem implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
-	@EmbeddedId   // PQ O ID É COMPOSTO DE ORDER_ID E PRODUCT_ID NA CLASSE OrderItemPK
-	private OrderItemPK id;
+
+	// como esse id é composto, ele tem que ser instanciado para não dar NullPointerException
+	// PQ O ID É COMPOSTO DE ORDER_ID E PRODUCT_ID NA CLASSE OrderItemPK
+	@EmbeddedId   
+	private OrderItemPK id = new OrderItemPK(); 
 	
 	private Integer quantity;
 	
@@ -34,6 +38,8 @@ public class OrderItem implements Serializable{
 	}
 	
 	// GETTERS AND SETTERS DA PK COMPOSTA DE ORDER E PRODUCT
+	
+	@JsonIgnore   // PARA NÃO ENTRAR NO LOOP 
 	public Order getOrder() {
 		return this.id.getOrder();
 	}
