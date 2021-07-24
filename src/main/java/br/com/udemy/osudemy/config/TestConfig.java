@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import br.com.udemy.osudemy.entities.Category;
 import br.com.udemy.osudemy.entities.Order;
 import br.com.udemy.osudemy.entities.OrderItem;
+import br.com.udemy.osudemy.entities.Payment;
 import br.com.udemy.osudemy.entities.Product;
 import br.com.udemy.osudemy.entities.User;
 import br.com.udemy.osudemy.entities.enums.OrderStatus;
@@ -76,6 +77,17 @@ public class TestConfig implements CommandLineRunner {
 		OrderItem orderItem3 = new OrderItem(order2, product3, 2, product3.getPrice());
 		OrderItem orderItem4 = new OrderItem(order3, product5, 2, product5.getPrice());
 		orderItemRepository.saveAll(Arrays.asList(orderItem1, orderItem2, orderItem3, orderItem4));
+		
+		// PAGAMENTO FEITO 2 HORAS DEPOIS DE EMITIDO O PEDIDO
+		Payment pay1 = new Payment(null, Instant.parse("2019-06-20T21:53:07Z"), order1);
+		order1.setPayment(pay1);
+		
+		/*
+		 *  One-to-one, a entidade não-dependente que atualiza o seu registro 
+			e o JPA se encarrega de gravar payment em sua tabela
+		 */
+		orderRepository.save(order1);
+		
 		
 	}
 	

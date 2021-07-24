@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -40,6 +42,15 @@ public class Order implements Serializable {
 	
 	@OneToMany(mappedBy = "id.order")  // One Order To Many OrderItems | id.order = id.getOrder em OrderItem
 	private Set<OrderItem> items = new HashSet<>();
+	
+	/* o id de Order igual ao de Payment
+	 * Order 1, Payment 1, onde Payment depende de Order
+	 * Ex.: pra gravar no BD 1 Payment, tem que existir um Order
+	 * pra gravar um Order no BD, não precisa de um Payment   
+	 */
+	@OneToOne(mappedBy = "order", 
+			cascade = CascadeType.ALL)
+	private Payment payment;
 	
 	
 	public Order() {
@@ -79,6 +90,14 @@ public class Order implements Serializable {
 	public Set<OrderItem> getItems() {
 		return this.items;
 	}
+	
+	public Double getTotal() {
+		double sum = 0.0;
+		for (OrderItem item : this.items) {
+			sum += item.getSubTotal();
+		}
+		return sum;
+	}
 
 	@Override
 	public int hashCode() {
@@ -96,6 +115,15 @@ public class Order implements Serializable {
 		if (status != null) {
 			this.status = status.getCode();
 		}
+	}	
+	
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
 	}
 
 	@Override
