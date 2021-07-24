@@ -41,12 +41,22 @@ public class TestConfig implements CommandLineRunner {
 		Category category1 = new Category(null, "Electronics");
 		Category category2 = new Category(null, "Books");
 		Category category3 = new Category(null, "Computers");
+		categoryRepository.saveAll(Arrays.asList(category1, category2, category3));
 		
 		Product product1 = new Product(null, "The Lord of the Rings", "Lorem ipsum dolor sit amet", 90.5, "");
 		Product product2 = new Product(null, "The Matrix", "Null eu imperdiet purus. Maecenas ante", 2190.0, "");
 		Product product3 = new Product(null, "MacBook Pro", "Nam eleifen maximus tortor, at mollis", 1250.0, "");
 		Product product4 = new Product(null, "Java for Dummies", "Donec aliquet odio ac rhoncus", 1200.0, "");
 		Product product5 = new Product(null, "American Beauty", "Cras fringilla convallis sem vel faucibus", 100.99, "");
+		
+		product1.getCategories().add(category2);
+		product2.getCategories().add(category1);
+		product2.getCategories().add(category3); 
+		product3.getCategories().add(category3);
+		product4.getCategories().add(category3);
+		product5.getCategories().add(category2);
+		
+		productRepository.saveAll(Arrays.asList(product1, product2, product3, product4, product5));
 		
 		User user1 = new User(null, "Maria Brown", "maria@gmail.com", "9888888", "123456");
 		User user2 = new User(null, "Alex Green", "alex@gmail.com", "97777777", "123456");
@@ -60,9 +70,7 @@ public class TestConfig implements CommandLineRunner {
 		
 		orderRepository.saveAll(Arrays.asList(order1,order2,order3));
 		
-		categoryRepository.saveAll(Arrays.asList(category1, category2, category3));
 		
-		productRepository.saveAll(Arrays.asList(product1, product2, product3, product4, product5));
 		
 	}
 	
